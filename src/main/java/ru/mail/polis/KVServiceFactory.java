@@ -1,9 +1,13 @@
 package ru.mail.polis;
 
 import org.jetbrains.annotations.NotNull;
+import ru.mail.polis.nsuprotivniy.DAO;
+import ru.mail.polis.nsuprotivniy.KVServiceImpl;
+import ru.mail.polis.nsuprotivniy.SQLiteDAO;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Set;
 
 /**
@@ -32,6 +36,7 @@ final class KVServiceFactory {
             @NotNull final File data,
             @NotNull final Set<String> topology) throws IOException {
         if (Runtime.getRuntime().maxMemory() > MAX_HEAP) {
+            System.out.println(Runtime.getRuntime().maxMemory());
             throw new IllegalStateException("The heap is too big. Consider setting Xmx.");
         }
 
@@ -47,7 +52,7 @@ final class KVServiceFactory {
             throw new IllegalArgumentException("Path is not a directory: " + data);
         }
 
-        // TODO: Implement me
-        throw new UnsupportedOperationException("Implement me!");
+        DAO dao = new SQLiteDAO(data.getPath());
+        return new KVServiceImpl(port, dao, topology);
     }
 }
