@@ -54,7 +54,7 @@ public class KVServiceImpl extends HttpServer implements KVService {
     public void handleGet(Request request, HttpSession session) throws IOException {
         Response response = null;
         try {
-            byte[] data = dao.getData(request.getParameter("id"));
+            byte[] data = dao.getData(request.getParameter("id="));
             response = Response.ok(data);
         } catch (IOException e) {
             response = new Response(Response.NOT_FOUND);
@@ -64,15 +64,25 @@ public class KVServiceImpl extends HttpServer implements KVService {
     }
 
     public void handlePUT(Request request, HttpSession session) throws IOException {
-        dao.upsertData(request.getParameter("id"), request.getBody());
-        Response response = new Response(Response.CREATED);
-        session.sendResponse(response);
+        try {
+            dao.upsertData(request.getParameter("id="), request.getBody());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            Response response = new Response(Response.CREATED);
+            session.sendResponse(response);
+        }
     }
 
     public void handleDELETE(Request request, HttpSession session) throws IOException {
-        dao.deleteData(request.getParameter("id"));
-        Response response = new Response(Response.ACCEPTED);
-        session.sendResponse(response);
+        try {
+            dao.deleteData(request.getParameter("id="));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            Response response = new Response(Response.ACCEPTED);
+            session.sendResponse(response);
+        }
     }
 
     @Override
