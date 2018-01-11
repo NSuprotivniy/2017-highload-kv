@@ -9,7 +9,6 @@ plugins {
 repositories {
     jcenter()
     mavenCentral()
-    flatDir { dirs("libs") }
 }
 
 dependencies {
@@ -26,16 +25,11 @@ dependencies {
     testCompile("com.google.guava:guava:23.1-jre")
 
     // One-nio
-    testCompile(group = "", name = "one-nio-1.0-SNAPSHOT", ext = "jar")
+    compile("ru.odnoklassniki:one-nio:1.0.2")
 
     // SQLite JDBC
-    testCompile("org.xerial:sqlite-jdbc:3.21.0.1")
+    compile("org.xerial:sqlite-jdbc:3.21.0.1")
 
-    // LogFactory
-    testCompile(group = "commons-logging", name = "commons-logging", version = "1.0.3")
-    testCompile(group = "asm", name = "asm", version = "3.3")
-    testCompile(group = "log4j", name = "log4j", version = "1.2.15")
-    testCompile(group = "com.sun", name = "tools", version = "1.4.2")
 }
 
 tasks {

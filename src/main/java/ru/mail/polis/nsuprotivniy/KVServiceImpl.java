@@ -43,6 +43,7 @@ public class KVServiceImpl extends HttpServer implements KVService {
 
     @Path("/v0/entity")
     public void handle(Request request, HttpSession session) throws IOException {
+        if (handleEmptyKey(request.getParameter("id="), session) == false) return;
         switch (request.getMethod())
         {
             case Request.METHOD_GET: handleGet(request, session); break;
@@ -56,20 +57,21 @@ public class KVServiceImpl extends HttpServer implements KVService {
         try {
             byte[] data = dao.getData(request.getParameter("id="));
             response = Response.ok(data);
-        } catch (IOException e) {
-            response = new Response(Response.NOT_FOUND);
 
+        } catch (IOException e) {
+            response = new Response(Response.NOT_FOUND, new byte[0]);
         }
         session.sendResponse(response);
     }
 
     public void handlePUT(Request request, HttpSession session) throws IOException {
         try {
+
             dao.upsertData(request.getParameter("id="), request.getBody());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            Response response = new Response(Response.CREATED);
+            Response response = new Response(Response.CREATED, new byte[0]);
             session.sendResponse(response);
         }
     }
@@ -80,7 +82,7 @@ public class KVServiceImpl extends HttpServer implements KVService {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            Response response = new Response(Response.ACCEPTED);
+            Response response = new Response(Response.ACCEPTED, new byte[0]);
             session.sendResponse(response);
         }
     }
@@ -90,5 +92,16 @@ public class KVServiceImpl extends HttpServer implements KVService {
         Response response = Response.ok(Utf8.toBytes("<html><body><pre>Default</pre></body></html>"));
         response.addHeader("Content-Type: text/html");
         session.sendResponse(response);
+    }
+
+    boolean handleEmptyKey(String key, HttpSession session) throws IOException {
+        if (key == null || key.length() == 0) {
+            Response response = new Response(Response.BAD_REQUEST, new byte[0]);
+            session.sendResponse(response);
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 }

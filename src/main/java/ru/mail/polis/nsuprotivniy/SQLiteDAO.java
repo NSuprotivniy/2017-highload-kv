@@ -2,13 +2,11 @@ package ru.mail.polis.nsuprotivniy;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.NoSuchElementException;
-import java.util.concurrent.atomic.LongAccumulator;
 
 public class SQLiteDAO implements DAO {
 
@@ -18,7 +16,7 @@ public class SQLiteDAO implements DAO {
     private PreparedStatement upsertDataStmt;
     private PreparedStatement deleteDataStmt;
 
-    final private String createTableQuery = "CREATE TABLE storage (k INTEGER PRIMARY KEY, v BLOB)";
+    final private String createTableQuery = "CREATE TABLE storage (k TEXT PRIMARY KEY, v BLOB)";
     final private String getDataQuery = "SELECT v FROM storage where k = ?";
     final private String upsertDataQuery = "INSERT OR REPLACE INTO storage(k, v) VALUES (?, ?)";
     final private String deleteDataQuery = "DELETE FROM storage where k = ?";
@@ -50,7 +48,7 @@ public class SQLiteDAO implements DAO {
     @Override
     public byte[] getData(@NotNull String key) throws NoSuchElementException, IllegalArgumentException, IOException {
         try {
-            getDataStmt.setLong(1, Long.parseLong(key));
+            getDataStmt.setString(1, key);
             ResultSet rs = getDataStmt.executeQuery();
             return rs.getBytes("v");
         } catch (SQLException e) {
@@ -63,7 +61,7 @@ public class SQLiteDAO implements DAO {
     @Override
     public void upsertData(@NotNull String key, @NotNull byte[] data) throws IllegalArgumentException, IOException {
         try {
-            upsertDataStmt.setLong(1, Long.parseLong(key));
+            upsertDataStmt.setString(1, key);
             upsertDataStmt.setBytes(2, data);
             upsertDataStmt.execute();
         } catch (SQLException e) {
@@ -76,7 +74,7 @@ public class SQLiteDAO implements DAO {
     @Override
     public void deleteData(@NotNull String key) throws IllegalArgumentException, IOException {
         try {
-            deleteDataStmt.setLong(1, Long.parseLong(key));
+            deleteDataStmt.setString(1, key);
             deleteDataStmt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
