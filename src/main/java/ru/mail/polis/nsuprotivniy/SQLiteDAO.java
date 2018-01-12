@@ -26,7 +26,7 @@ public class SQLiteDAO implements DAO {
             Class.forName("org.sqlite.JDBC");
             System.out.println(directory + "/storage.s3db");
             boolean exists = Files.exists(Paths.get(directory + "/storage.s3db"));
-            connection = DriverManager.getConnection("jdbc:sqlite:" + directory + "/storage.s3db");
+            connection = DriverManager.getConnection("jdbc:sqlite:" + directory + "/storage.s3db?journal_mode=OFF&synchronous=OFF&locking_mode=exclusive");
             if (!exists) {
                 connection.createStatement().execute(createTableQuery);
             }
