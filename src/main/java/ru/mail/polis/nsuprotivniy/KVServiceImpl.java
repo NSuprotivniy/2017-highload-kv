@@ -282,4 +282,10 @@ public class KVServiceImpl extends HttpServer implements KVService {
         return servers;
     }
 
+    @Override
+    public void stop() {
+        super.stop();
+        dao.close();
+    }
+
 }

@@ -82,4 +82,16 @@ public class SQLiteDAO implements DAO {
             throw new IOException();
         }
     }
+
+    public void close()
+    {
+        try {
+            getDataStmt.close();
+            upsertDataStmt.close();
+            deleteDataStmt.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

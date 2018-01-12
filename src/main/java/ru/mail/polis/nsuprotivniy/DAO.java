@@ -17,4 +17,7 @@ public interface DAO {
 
     @NotNull
     void deleteData(@NotNull String key) throws IllegalArgumentException, IOException;
+
+    @NotNull
+    void close();
 }
