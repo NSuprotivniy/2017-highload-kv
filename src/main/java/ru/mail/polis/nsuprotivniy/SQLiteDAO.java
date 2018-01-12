@@ -16,10 +16,10 @@ public class SQLiteDAO implements DAO {
     private PreparedStatement upsertDataStmt;
     private PreparedStatement deleteDataStmt;
 
-    final private String createTableQuery = "CREATE TABLE storage (k TEXT PRIMARY KEY, v BLOB)";
-    final private String getDataQuery = "SELECT v FROM storage where k = ?";
-    final private String upsertDataQuery = "INSERT OR REPLACE INTO storage(k, v) VALUES (?, ?)";
-    final private String deleteDataQuery = "DELETE FROM storage where k = ?";
+    final private String createTableQuery = "CREATE TABLE storage (k TEXT PRIMARY KEY, v BLOB, deleted INTEGER DEFAULT 0)";
+    final private String getDataQuery = "SELECT v, deleted FROM storage where k = ?";
+    final private String upsertDataQuery = "INSERT OR REPLACE INTO storage(k, v, deleted) VALUES (?, ?, 0)";
+    final private String deleteDataQuery = "UPDATE storage SET deleted = 1 where k = ?";
 
     public SQLiteDAO(String directory) throws IOException {
         try {
@@ -50,7 +50,8 @@ public class SQLiteDAO implements DAO {
         try {
             getDataStmt.setString(1, key);
             ResultSet rs = getDataStmt.executeQuery();
-            return rs.getBytes("v");
+            if (rs.getInt("deleted") == 1) return DELETED;
+            else return rs.getBytes("v");
         } catch (SQLException e) {
             e.printStackTrace();
             throw new IOException();
