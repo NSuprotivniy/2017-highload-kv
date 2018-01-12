@@ -1,0 +1,50 @@
+$ wrk --latency -c4 -d1m -s put.lua http://localhost:8080/
+Running 1m test @ http://localhost:8080/
+  2 threads and 4 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    50.45ms   54.05ms 517.11ms   96.12%
+    Req/Sec    45.41     10.13    70.00     73.79%
+  Latency Distribution
+     50%   36.30ms
+     75%   55.69ms
+     90%   67.88ms
+     99%  381.19ms
+  5305 requests in 1.00m, 383.37KB read
+Requests/sec:     88.30
+Transfer/sec:      6.38KB
+
+$ wrk --latency -c4 -d1m -s get.lua http://localhost:8080/
+Running 1m test @ http://localhost:8080/
+  2 threads and 4 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     4.12ms   30.91ms 878.62ms   99.55%
+    Req/Sec   432.46      1.16k    6.12k    90.20%
+  Latency Distribution
+     50%  208.00us
+     75%  314.00us
+     90%   17.52ms
+     99%   20.12ms
+  25810 requests in 1.00m, 24.01MB read
+  Non-2xx or 3xx responses: 2895
+Requests/sec:    429.57
+Transfer/sec:    409.13KB
+
+wrk --latency -c4 -d1m -s delete.lua http://localhost:8080/
+Running 1m test @ http://localhost:8080/
+  2 threads and 4 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   127.83ms  254.43ms   1.53s    90.78%
+    Req/Sec    47.43     18.65    80.00     71.94%
+  Latency Distribution
+     50%   35.32ms
+     75%   66.25ms
+     90%  338.05ms
+     99%    1.27s 
+  4824 requests in 1.00m, 353.32KB read
+  Non-2xx or 3xx responses: 4824
+Requests/sec:     80.31
+Transfer/sec:      5.88KB
+
+
+
+

@@ -16,5 +16,7 @@
 # ...even if they are in subdirectories
 !*/
 
+!*.svg
+!wrk
+!/load/*
 
-!load
